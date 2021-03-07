@@ -38,10 +38,19 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/bootstrap
-    'bootstrap-vue/nuxt'
+    'bootstrap-vue/nuxt',
+    // Using package name
+    '@nuxtjs/axios',
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-  }
+  },
+
+  serverMiddleware: [
+    {
+      path: '/todos',
+      handler: '~/serverMiddleware/TodosApi.js'
+    }
+  ]
 }

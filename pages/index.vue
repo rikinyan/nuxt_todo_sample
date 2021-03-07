@@ -6,53 +6,86 @@
     <form>
       <div>
         <label for="todo-title">title</label>
-        <input id="todo-title" type="text">
+        <input id="todo-title" type="text" v-model="title">
         <label for="todo-deadline">deadline</label>
-        <input id="todo-deadline" type="date">
+        <input id="todo-deadline" type="date" v-model="deadline">
       </div>
       <div>
         <label for="todo-detail">detail</label>
-        <textarea placeholder="detail……" name="" id="todo-detail" cols="50" rows="5">
-        </textarea>
+        <textarea
+          id="todo-detail"
+          placeholder="detail……"
+          name=""
+          cols="50"
+          rows="5"
+          v-model="detail" />
       </div>
+      <button @click="register($event)">
+        register
+      </button>
     </form>
     <div class="list-group">
       <ToDoListItem
-        v-for="todo in this.todoData"
+        v-for="todo in todos"
+        :todo="todo"
         :key="todo.id"
-        :id="todo.id"
-        :title="todo.title"
-        :detail="todo.detail"
       />
     </div>
   </div>
 </template>
 
 <script>
+import dateformat from 'dateformat'
+import { mapActions } from 'vuex'
+
 export default {
-  data () {
-    return {
-      todoData: [
-        {
-          id: 1,
-          title: 'Appの新機能開発',
-          deadline: Date(),
-          detail: 'あぷりのかいはつをする。せんぱいにたのまれてたの忘れていたので、優先度たかし。'
-        },
-        {
-          id: 2,
-          title: 'nuxtの勉強',
-          deadline: Date(),
-          detail: 'こうはいたちにおしえなきゃならんのよ。'
-        },
-        {
-          id: 3,
-          title: 'clean architectureを読む',
-          deadline: Date(),
-          detail: 'わかめ'
-        }
-      ]
+
+  mounted () {
+    this.fetchTodos()
+  },
+
+  computed: {
+    todos () {
+      return this.$store.state.todos.todos
+    },
+    title: {
+      get () {
+        return this.$store.state.todos.newTodo.title
+      },
+      set (newValue) {
+        this.$store.commit('todos/title', newValue)
+      }
+    },
+    deadline: {
+      get () {
+        return dateformat(this.$store.state.todos.newTodo.deadline, 'yyyy-mm-dd')
+      },
+      set (newValue) {
+        const date = new Date(newValue)
+        this.$store.commit('todos/deadline', date)
+      }
+    },
+    detail: {
+      get () {
+        return this.$store.state.todos.newTodo.detail
+      },
+      set (newValue) {
+        this.$store.commit('todos/detail', newValue)
+      }
     }
+  },
+
+  methods: {
+    register (event) {
+      if (event) {
+        event.preventDefault()
+      }
+      this.registerTodo()
+    },
+    ...mapActions({
+      fetchTodos: 'todos/fetchTodos',
+      registerTodo: 'todos/registerTodo'
+    })
   }
 }
 </script>

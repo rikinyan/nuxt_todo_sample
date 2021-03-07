@@ -1,8 +1,8 @@
 <template>
-  <NuxtLink to="/">
+  <NuxtLink :to="destinationUrl">
     <div class="list-group-item">
-      <h2>{{title}}</h2>
-      deadline: {{deadlineString}}
+      <h2>{{ todo.title }}</h2>
+      deadline: {{ deadlineString }}
     </div>
   </NuxtLink>
 </template>
@@ -11,16 +11,14 @@
 import dateformat from 'dateformat'
 
 export default {
-  props: {
-    id: Number,
-    title: String,
-    deadline: Date,
-    detail: String
-  },
+  props: ['todo'],
 
   computed: {
     deadlineString () {
-      return dateformat(this.deadline, 'yyyy/mm/dd')
+      return dateformat(this.todo.deadline, 'yyyy/mm/dd')
+    },
+    destinationUrl () {
+      return `/detail/${this.todo.id}`
     }
   }
 }
